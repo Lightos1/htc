@@ -40,7 +40,7 @@ public class Main {
         System.out.println("--crypt");
         System.out.println("\tEncrypt, decrypt, or generate cryptographic keys.");
         System.out.println("\tFlags:");
-        System.out.println("\t\t-<algorithm>\tCrypto algorithm (officially supported: RSA, AES)");
+        System.out.println("\t\t-<algorithm>\tCrypto algorithm (Supported: RSA, AES)");
         System.out.println("\t\t-gen\tGenerate a key pair or secret key.");
         System.out.println("\t\t\tArguments:");
         System.out.println("\t\t\t\tBit size (e.g., 2048 for RSA, 256 for AES)");
