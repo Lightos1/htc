@@ -5,7 +5,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Crypto {
@@ -106,90 +105,39 @@ public class Crypto {
 
     private static void encrypt(String alg, Object key, String message) {
         try {
-            Cipher encrypt;
-
-            if (alg.equalsIgnoreCase("aes")) {
-                String cipherTransformation = "AES/CBC/PKCS5Padding";
-                SecureRandom secureRandom = new SecureRandom();
-                byte[] iv = new byte[16]; // AES block size for CBC
-                secureRandom.nextBytes(iv); // Generate a random IV
-                encrypt = Cipher.getInstance(cipherTransformation);
-
-                if (key instanceof SecretKey) {
-                    encrypt.init(Cipher.ENCRYPT_MODE, (SecretKey) key, new IvParameterSpec(iv));
-                } else {
-                    throw new IllegalArgumentException("Unsupported key type for AES encryption");
-                }
-
-                byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
-                byte[] encryptedBytes = encrypt.doFinal(messageBytes);
-
-                // Combine IV and encrypted message for transmission or storage
-                byte[] encryptedWithIv = new byte[iv.length + encryptedBytes.length];
-                System.arraycopy(iv, 0, encryptedWithIv, 0, iv.length);
-                System.arraycopy(encryptedBytes, 0, encryptedWithIv, iv.length, encryptedBytes.length);
-
-                // Print the result as Base64
-                System.out.println("\n" + Base64.getEncoder().encodeToString(encryptedWithIv));
-            } else if (alg.equalsIgnoreCase("rsa")) {
-                encrypt = Cipher.getInstance("RSA");
-
-                if (key instanceof PublicKey) {
-                    encrypt.init(Cipher.ENCRYPT_MODE, (PublicKey) key);
-                } else {
-                    throw new IllegalArgumentException("Unsupported key type for RSA encryption");
-                }
-
-                byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
-                byte[] encryptedBytes = encrypt.doFinal(messageBytes);
-                System.out.println("\n" + Base64.getEncoder().encodeToString(encryptedBytes));
+            Cipher encrypt = Cipher.getInstance(alg);
+            if (key instanceof PublicKey) {
+                encrypt.init(Cipher.ENCRYPT_MODE, (PublicKey) key);
+            } else if (key instanceof SecretKey) {
+                encrypt.init(Cipher.ENCRYPT_MODE, (SecretKey) key);
+            } else {
+                throw new IllegalArgumentException("Unsupported key type");
             }
+
+            byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
+            byte[] encryptedBytes = encrypt.doFinal(messageBytes);
+            System.out.println("\n" + Base64.getEncoder().encodeToString(encryptedBytes));
         } catch (Exception e) {
-            System.err.println("Error during encryption: " + e.getMessage());
+            System.err.println("Invalid arguments: " + e.getMessage());
         }
     }
 
     private static void decrypt(String alg, Object key, String message) {
         try {
-            Cipher decrypt;
-
-            if (alg.equalsIgnoreCase("aes")) {
-                String cipherTransformation = "AES/CBC/PKCS5Padding";
-                byte[] encryptedWithIv = Base64.getDecoder().decode(message);
-
-                // Extract the IV from the first 16 bytes
-                byte[] iv = new byte[16];
-                System.arraycopy(encryptedWithIv, 0, iv, 0, iv.length);
-
-                // Extract the encrypted message (the rest after the IV)
-                byte[] encryptedBytes = new byte[encryptedWithIv.length - iv.length];
-                System.arraycopy(encryptedWithIv, iv.length, encryptedBytes, 0, encryptedBytes.length);
-
-                decrypt = Cipher.getInstance(cipherTransformation);
-
-                if (key instanceof SecretKey) {
-                    decrypt.init(Cipher.DECRYPT_MODE, (SecretKey) key, new IvParameterSpec(iv));
-                } else {
-                    throw new IllegalArgumentException("Unsupported key type for AES decryption");
-                }
-
-                byte[] decryptedBytes = decrypt.doFinal(encryptedBytes);
-                System.out.println("\n" + new String(decryptedBytes, StandardCharsets.UTF_8));
-            } else if (alg.equalsIgnoreCase("rsa")) {
-                decrypt = Cipher.getInstance("RSA");
-
-                if (key instanceof PrivateKey) {
-                    decrypt.init(Cipher.DECRYPT_MODE, (PrivateKey) key);
-                } else {
-                    throw new IllegalArgumentException("Unsupported key type for RSA decryption");
-                }
-
-                byte[] encryptedBytes = Base64.getDecoder().decode(message);
-                byte[] decryptedBytes = decrypt.doFinal(encryptedBytes);
-                System.out.println("\n" + new String(decryptedBytes, StandardCharsets.UTF_8));
+            Cipher decrypt = Cipher.getInstance(alg);
+            if (key instanceof PrivateKey) {
+                decrypt.init(Cipher.DECRYPT_MODE, (PrivateKey) key);
+            } else if (key instanceof SecretKey) {
+                decrypt.init(Cipher.DECRYPT_MODE, (SecretKey) key);
+            } else {
+                throw new IllegalArgumentException("Unsupported key type");
             }
+
+            byte[] encryptedBytes = Base64.getDecoder().decode(message);
+            byte[] decryptedBytes = decrypt.doFinal(encryptedBytes);
+            System.out.println("\n" + new String(decryptedBytes, StandardCharsets.UTF_8));
         } catch (Exception e) {
-            System.err.println("Error during decryption: " + e.getMessage());
+            System.err.println("Invalid arguments: " + e.getMessage());
         }
     }
 
