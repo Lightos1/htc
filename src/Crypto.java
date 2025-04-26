@@ -1,3 +1,4 @@
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import javax.crypto.*;
 import java.security.spec.InvalidKeySpecException;
@@ -113,7 +114,7 @@ public class Crypto {
                 throw new IllegalArgumentException("Unsupported key type");
             }
 
-            byte[] messageBytes = message.getBytes();
+            byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
             byte[] encryptedBytes = encrypt.doFinal(messageBytes);
             System.out.println("\n" + Base64.getEncoder().encodeToString(encryptedBytes));
         } catch (Exception e) {
@@ -134,7 +135,7 @@ public class Crypto {
 
             byte[] encryptedBytes = Base64.getDecoder().decode(message);
             byte[] decryptedBytes = decrypt.doFinal(encryptedBytes);
-            System.out.println("\n" + new String(decryptedBytes));
+            System.out.println("\n" + new String(decryptedBytes, StandardCharsets.UTF_8));
         } catch (Exception e) {
             System.err.println("Invalid arguments: " + e.getMessage());
         }
