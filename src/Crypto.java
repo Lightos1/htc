@@ -16,14 +16,16 @@ public class Crypto {
         switch (flags) {
             case "gen" -> {
                 if (args.length != 4) {
-                    System.out.println("Incorrect amount of arguments, expected 4, received: " + args.length);
+                    System.err.println("Incorrect amount of arguments, expected 4, received: " + args.length);
+                    return;
                 }
                 int bits = Integer.parseInt(args[3].substring(1));
                 generateKeys(alg, bits);
             }
             case "en" -> {
                 if (args.length != 5) {
-                    System.out.println("Incorrect amount of arguments, expected 5, received: " + args.length);
+                    System.err.println("Incorrect amount of arguments, expected 5, received: " + args.length);
+                    return;
                 }
                 Object key = alg.equalsIgnoreCase("AES") ? getSecretKey(args[3]) : getPublicKey(args[3], alg);
                 String message = args[4];
@@ -32,14 +34,15 @@ public class Crypto {
             }
             case "de" -> {
                 if (args.length != 5) {
-                    System.out.println("Incorrect amount of arguments, expected 5, received: " + args.length);
+                    System.err.println("Incorrect amount of arguments, expected 5, received: " + args.length);
+                    return;
                 }
                 Object key = alg.equalsIgnoreCase("AES") ? getSecretKey(args[3]) : getPrivateKey(args[3], alg);
                 String message = args[4];
 
                 decrypt(alg, key, message);
             }
-            default -> System.out.println("Invalid arguments");
+            default -> System.err.println("Invalid arguments");
         }
     }
 
@@ -63,7 +66,7 @@ public class Crypto {
                 System.out.println("Private key: " + Base64.getEncoder().encodeToString(privateKey.getEncoded()));
             }
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Invalid arguments: " + e.getMessage());
+            System.err.println("Invalid arguments: " + e.getMessage());
         }
     }
 

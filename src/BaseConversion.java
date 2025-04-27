@@ -20,7 +20,6 @@ public class BaseConversion {
         System.out.println("0x" + Integer.toHexString(Integer.parseInt(decValue)));
     }
 
-
     private static void toDec(String hexValue) {
         System.out.println(Integer.parseInt(hexValue, 16));
     }

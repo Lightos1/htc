@@ -5,7 +5,7 @@ public class Hashing {
 
     public static void hash(String[] args) {
         if (args.length != 3) {
-            System.out.println("Incorrect amount of arguments, expected 3, received: " + args.length);
+            System.err.println("Incorrect amount of arguments, expected 3, received: " + args.length);
             return;
         }
 
@@ -21,7 +21,7 @@ public class Hashing {
 
             System.out.println(hexString);
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Could not identify hashing algorithm: " + e.getMessage());
+            System.err.println("Could not identify hashing algorithm: " + e.getMessage());
         }
     }
 

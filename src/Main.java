@@ -1,5 +1,10 @@
 public class Main {
     public static void main(String[] args) {
+        if (args.length == 0) {
+            System.err.println("No arguments specified.");
+            return;
+        }
+
         paramOne(args);
     }
 
@@ -7,10 +12,11 @@ public class Main {
         switch (functionality[0]) {
             case "--base" -> BaseConversion.base(functionality);
             case "--thex" -> TextConversion.thex(functionality);
+            case "--b64" -> TextConversion.b64(functionality);
             case "--hash" -> Hashing.hash(functionality);
             case "--crypt" -> Crypto.cryption(functionality);
             case "--help" -> help();
-            default -> System.out.println("Unknown arguments.");
+            default -> System.err.println("Unknown arguments.");
         }
     }
 
@@ -30,6 +36,14 @@ public class Main {
         System.out.println("\tArguments:");
         System.out.println("\t\tText to convert. Prefix with '0x' to decode from hex.\n");
 
+        System.out.println("--b64");
+        System.out.println("\tConvert from and to base64.");
+        System.out.println("\tFlags:");
+        System.out.println("\t\t-en\tEncode");
+        System.out.println("\t\t-de\tDecode");
+        System.out.println("\tArguments:");
+        System.out.println("\t\tText to convert.\n");
+
         System.out.println("--hash");
         System.out.println("\tHash a text input using a specified algorithm.");
         System.out.println("\tFlags:");
@@ -48,7 +62,7 @@ public class Main {
         System.out.println("\t\t-de\tDecrypt a message.");
         System.out.println("\tArguments for -en and -de:");
         System.out.println("\t\tKey (public, private, or secret key in Base64)");
-        System.out.println("\t\tMessage to encrypt or decrypt.\n");
+        System.out.println("\t\tMessage to encrypt or decrypt.");
     }
 
 }
