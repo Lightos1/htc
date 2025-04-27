@@ -119,7 +119,7 @@ public class Crypto {
 
             byte[] messageBytes = message.getBytes(StandardCharsets.UTF_8);
             byte[] encryptedBytes = encrypt.doFinal(messageBytes);
-            System.out.println("\n" + Base64.getEncoder().encodeToString(encryptedBytes));
+            System.out.println(Base64.getEncoder().encodeToString(encryptedBytes));
         } catch (Exception e) {
             System.err.println("Invalid arguments: " + e.getMessage());
         }
@@ -138,7 +138,7 @@ public class Crypto {
 
             byte[] encryptedBytes = Base64.getDecoder().decode(message);
             byte[] decryptedBytes = decrypt.doFinal(encryptedBytes);
-            System.out.println("\n" + new String(decryptedBytes, StandardCharsets.UTF_8));
+            System.out.println(new String(decryptedBytes, StandardCharsets.UTF_8));
         } catch (Exception e) {
             System.err.println("Invalid arguments: " + e.getMessage());
         }
